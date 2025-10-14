@@ -14,7 +14,7 @@ let unreadMessageCount = 0;
 
 // Persist chat to localStorage so admin messages appear for students later
 function loadPersistedChatMessages() {
-    try {s
+    try {
         const stored = localStorage.getItem('chatMessages');
         if (stored) {
             const parsed = JSON.parse(stored);
@@ -50,21 +50,23 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeApp() {
-    // Load data from localStorage first, fallback to sample data
+    // Load data from localStorage first, fallback to empty arrays
     const savedStudents = localStorage.getItem('students');
     const savedApplications = localStorage.getItem('applications');
     
     if (savedStudents) {
         students = JSON.parse(savedStudents);
+        console.log('Loaded students from localStorage:', students);
     } else {
-        students = [...sampleStudents];
+        students = []; // Start with empty array - no sample data
         localStorage.setItem('students', JSON.stringify(students));
+        console.log('Initialized with empty students array');
     }
     
     if (savedApplications) {
         applications = JSON.parse(savedApplications);
     } else {
-        applications = [...sampleApplications];
+        applications = []; // Start with empty array
         localStorage.setItem('applications', JSON.stringify(applications));
     }
     
@@ -197,6 +199,8 @@ function handleLogin(event) {
     const passwordRaw = document.getElementById('loginPassword').value;
     const email = (emailRaw || '').trim().toLowerCase();
     const password = (passwordRaw || '').trim();
+    
+    console.log('Login attempt:', { role, email, password });
     
     // First, accept admin credentials regardless of selected role to avoid UX issues
     if ((email === 'admin@grantes.com' || email === 'admin@grantes.local') && password === 'admin123') {
@@ -697,6 +701,15 @@ function showAdminTab(tabName) {
     // Load tab-specific content
     if (tabName === 'reports') {
         loadReports();
+    }
+}
+
+// Quick action: show only the Students list and hide the tab bar
+function openManageStudents() {
+    showAdminTab('students');
+    const navTabs = document.querySelector('.admin-nav-tabs');
+    if (navTabs) {
+        navTabs.style.display = 'none';
     }
 }
 
@@ -1842,16 +1855,15 @@ function handleStudentRegistration(event) {
         return;
     }
     
-    // Check if student ID already exists
-    const existingStudent = students.find(s => s.studentId === studentId);
-    if (existingStudent) {
-        showToast('Student ID already exists!', 'error');
-        return;
+    // Load latest students data from localStorage
+    const savedStudents = localStorage.getItem('students');
+    if (savedStudents) {
+        students = JSON.parse(savedStudents);
     }
     
-    // Create new student
+    // Create new student with unique ID
     const newStudent = {
-        id: students.length + 1,
+        id: students.length > 0 ? Math.max(...students.map(s => s.id)) + 1 : 1,
         firstName: firstName,
         lastName: lastName,
         studentId: studentId,
@@ -1871,6 +1883,9 @@ function handleStudentRegistration(event) {
     
     // Save to localStorage
     localStorage.setItem('students', JSON.stringify(students));
+    
+    console.log('Student saved:', newStudent);
+    console.log('All students after save:', students);
     
     // Close modal
     closeStudentRegistrationModal();
@@ -1898,10 +1913,15 @@ function closeBulkRegistrationModal() {
 
 // Admin Tab Navigation
 function showAdminTab(tabName) {
-    // Hide homepage content and show tab content
+    // Scope to admin dashboard only
+    const adminSection = document.getElementById('admin-dashboard');
     const homepageContent = document.getElementById('admin-homepage');
-    const tabContent = document.querySelector('.tab-content');
-    const navTabs = document.querySelector('.admin-nav-tabs');
+    const tabContent = adminSection ? adminSection.querySelector('.tab-content') : null;
+    const navTabs = adminSection ? adminSection.querySelector('.admin-nav-tabs') : null;
+    
+    if (!adminSection || !homepageContent || !tabContent || !navTabs) {
+        return;
+    }
     
     if (tabName === 'homepage') {
         homepageContent.style.display = 'block';
@@ -1910,29 +1930,31 @@ function showAdminTab(tabName) {
         return;
     }
     
-    // Show tab content
+    // Show tab content within admin section
     homepageContent.style.display = 'none';
     tabContent.style.display = 'block';
     navTabs.style.display = 'flex';
     
-    // Hide all tab panels
-    document.querySelectorAll('.tab-panel').forEach(panel => {
+    // Hide all admin tab panels and deactivate tab buttons
+    adminSection.querySelectorAll('.tab-panel').forEach(panel => {
         panel.classList.remove('active');
     });
-    
-    // Remove active class from all tab buttons
-    document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+    adminSection.querySelectorAll('.nav-tab-btn').forEach(btn => {
         btn.classList.remove('active');
     });
     
-    // Show selected tab panel
-    document.getElementById(`${tabName}-tab`).classList.add('active');
+    // Activate selected tab panel
+    const targetPanel = document.getElementById(`${tabName}-tab`);
+    if (targetPanel) {
+        targetPanel.classList.add('active');
+    }
     
-    // Add active class to clicked tab button
-    const clickedButton = event.target;
-    clickedButton.classList.add('active');
+    // Mark clicked button active if this came from a click
+    if (typeof event !== 'undefined' && event && event.target) {
+        event.target.classList.add('active');
+    }
     
-    // Load specific content based on tab
+    // Load content
     switch(tabName) {
         case 'applications':
             loadApplications();
@@ -2001,14 +2023,22 @@ function loadApplications() {
 function loadStudents() {
     const container = document.getElementById('studentsContainer');
     
+    if (!container) {
+        console.log('studentsContainer not found!');
+        return;
+    }
+    
     // Load students from localStorage to ensure we have the latest data
     const savedStudents = localStorage.getItem('students');
     if (savedStudents) {
         students = JSON.parse(savedStudents);
     }
     
+    console.log('Loading students:', students);
+    console.log('Students count:', students.length);
+    
     if (students.length === 0) {
-        container.innerHTML = '<p class="no-data">No students found.</p>';
+        container.innerHTML = '<p class="no-data">No students found. Register some students first!</p>';
         return;
     }
     
