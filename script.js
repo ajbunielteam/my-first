@@ -50,9 +50,24 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function initializeApp() {
-    // Load sample data
-    students = [...sampleStudents];
-    applications = [...sampleApplications];
+    // Load data from localStorage first, fallback to sample data
+    const savedStudents = localStorage.getItem('students');
+    const savedApplications = localStorage.getItem('applications');
+    
+    if (savedStudents) {
+        students = JSON.parse(savedStudents);
+    } else {
+        students = [...sampleStudents];
+        localStorage.setItem('students', JSON.stringify(students));
+    }
+    
+    if (savedApplications) {
+        applications = JSON.parse(savedApplications);
+    } else {
+        applications = [...sampleApplications];
+        localStorage.setItem('applications', JSON.stringify(applications));
+    }
+    
     loadPersistedChatMessages();
     
     // Check if user is already logged in
@@ -1796,3 +1811,440 @@ function renderComments(comments) {
         </div>
     `).join('');
 }
+
+// Student Registration Modal Functions
+function openStudentRegistrationModal() {
+    document.getElementById('studentRegistrationModal').style.display = 'block';
+    // Clear form
+    document.getElementById('studentRegistrationForm').reset();
+}
+
+function closeStudentRegistrationModal() {
+    document.getElementById('studentRegistrationModal').style.display = 'none';
+}
+
+function handleStudentRegistration(event) {
+    event.preventDefault();
+    
+    const firstName = document.getElementById('adminFirstName').value;
+    const lastName = document.getElementById('adminLastName').value;
+    const studentId = document.getElementById('adminStudentId').value;
+    const email = document.getElementById('adminEmail').value;
+    const awardNumber = document.getElementById('adminAwardNumber').value;
+    const password = document.getElementById('adminPassword').value;
+    const confirmPassword = document.getElementById('adminConfirmPassword').value;
+    const course = document.getElementById('adminCourse').value;
+    const year = document.getElementById('adminYear').value;
+    
+    // Validate passwords match
+    if (password !== confirmPassword) {
+        showToast('Passwords do not match!', 'error');
+        return;
+    }
+    
+    // Check if student ID already exists
+    const existingStudent = students.find(s => s.studentId === studentId);
+    if (existingStudent) {
+        showToast('Student ID already exists!', 'error');
+        return;
+    }
+    
+    // Create new student
+    const newStudent = {
+        id: students.length + 1,
+        firstName: firstName,
+        lastName: lastName,
+        studentId: studentId,
+        email: email,
+        awardNumber: awardNumber,
+        password: password,
+        course: course,
+        year: year,
+        status: 'active',
+        applicationStatus: 'approved',
+        registered: new Date().toISOString(),
+        role: 'student'
+    };
+    
+    // Add to students array
+    students.push(newStudent);
+    
+    // Save to localStorage
+    localStorage.setItem('students', JSON.stringify(students));
+    
+    // Close modal
+    closeStudentRegistrationModal();
+    
+    // Show success message
+    showToast('Student registered successfully!', 'success');
+    
+    // Navigate to manage students section
+    showAdminTab('students');
+}
+
+// Bulk Registration Modal Functions
+function openBulkRegistrationModal() {
+    document.getElementById('bulkRegistrationModal').style.display = 'block';
+    // Reset to step 1
+    document.getElementById('bulkStep1').classList.add('active');
+    document.getElementById('bulkStep2').classList.remove('active');
+    document.getElementById('fileInfo').style.display = 'none';
+    document.getElementById('processFileBtn').disabled = true;
+}
+
+function closeBulkRegistrationModal() {
+    document.getElementById('bulkRegistrationModal').style.display = 'none';
+}
+
+// Admin Tab Navigation
+function showAdminTab(tabName) {
+    // Hide homepage content and show tab content
+    const homepageContent = document.getElementById('admin-homepage');
+    const tabContent = document.querySelector('.tab-content');
+    const navTabs = document.querySelector('.admin-nav-tabs');
+    
+    if (tabName === 'homepage') {
+        homepageContent.style.display = 'block';
+        tabContent.style.display = 'none';
+        navTabs.style.display = 'none';
+        return;
+    }
+    
+    // Show tab content
+    homepageContent.style.display = 'none';
+    tabContent.style.display = 'block';
+    navTabs.style.display = 'flex';
+    
+    // Hide all tab panels
+    document.querySelectorAll('.tab-panel').forEach(panel => {
+        panel.classList.remove('active');
+    });
+    
+    // Remove active class from all tab buttons
+    document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Show selected tab panel
+    document.getElementById(`${tabName}-tab`).classList.add('active');
+    
+    // Add active class to clicked tab button
+    const clickedButton = event.target;
+    clickedButton.classList.add('active');
+    
+    // Load specific content based on tab
+    switch(tabName) {
+        case 'applications':
+            loadApplications();
+            break;
+        case 'students':
+            loadStudents();
+            break;
+        case 'reports':
+            loadReports();
+            break;
+        case 'settings':
+            loadSettings();
+            break;
+    }
+}
+
+// Load Applications Tab
+function loadApplications() {
+    const container = document.getElementById('applicationsContainer');
+    
+    if (applications.length === 0) {
+        container.innerHTML = '<p class="no-data">No applications found.</p>';
+        return;
+    }
+    
+    const applicationsHTML = applications.map(app => `
+        <div class="application-item">
+            <div class="application-header">
+                <h4>${app.firstName} ${app.lastName}</h4>
+                <span class="status-badge status-${app.status}">${app.status.toUpperCase()}</span>
+            </div>
+            <div class="application-info">
+                <div class="info-item">
+                    <span class="info-label">Student ID:</span>
+                    <span class="info-value">${app.studentId}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">${app.email}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Course:</span>
+                    <span class="info-value">${app.course}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Year:</span>
+                    <span class="info-value">${app.year}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Applied:</span>
+                    <span class="info-value">${formatDate(app.appliedDate)}</span>
+                </div>
+            </div>
+            <div class="application-actions">
+                <button class="btn btn-primary" onclick="reviewApplication(${app.id})">Review</button>
+                <button class="btn btn-success" onclick="updateApplicationStatus(${app.id}, 'approved')">Approve</button>
+                <button class="btn btn-danger" onclick="updateApplicationStatus(${app.id}, 'rejected')">Reject</button>
+            </div>
+        </div>
+    `).join('');
+    
+    container.innerHTML = applicationsHTML;
+}
+
+// Load Students Tab
+function loadStudents() {
+    const container = document.getElementById('studentsContainer');
+    
+    // Load students from localStorage to ensure we have the latest data
+    const savedStudents = localStorage.getItem('students');
+    if (savedStudents) {
+        students = JSON.parse(savedStudents);
+    }
+    
+    if (students.length === 0) {
+        container.innerHTML = '<p class="no-data">No students found.</p>';
+        return;
+    }
+    
+    const studentsHTML = students.map(student => `
+        <div class="student-item">
+            <div class="student-header">
+                <h4>${student.firstName} ${student.lastName}</h4>
+                <span class="status-badge status-${student.status}">${student.status.toUpperCase()}</span>
+            </div>
+            <div class="student-info">
+                <div class="info-item">
+                    <span class="info-label">Student ID:</span>
+                    <span class="info-value">${student.studentId}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value">${student.email}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Course:</span>
+                    <span class="info-value">${student.course}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Year:</span>
+                    <span class="info-value">${student.year}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Award Number:</span>
+                    <span class="info-value">${student.awardNumber || 'N/A'}</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Registered:</span>
+                    <span class="info-value">${formatDate(student.registered)}</span>
+                </div>
+            </div>
+            <div class="student-actions">
+                <button class="btn btn-primary" onclick="viewStudentProfile(${student.id})">View Profile</button>
+                <button class="btn btn-secondary" onclick="editStudent(${student.id})">Edit</button>
+                <button class="btn btn-danger" onclick="archiveStudent(${student.id})">Archive</button>
+            </div>
+        </div>
+    `).join('');
+    
+    container.innerHTML = studentsHTML;
+}
+
+// Load Reports Tab
+function loadReports() {
+    // This would load charts and reports
+    showToast('Reports loaded successfully!', 'success');
+}
+
+// Load Settings Tab
+function loadSettings() {
+    // This would load system settings
+    showToast('Settings loaded successfully!', 'success');
+}
+
+// Student Management Functions
+function viewStudentProfile(studentId) {
+    const student = students.find(s => s.id === studentId);
+    if (!student) return;
+    
+    // Populate modal with student data
+    document.getElementById('adminStudentName').textContent = `${student.firstName} ${student.lastName}`;
+    document.getElementById('adminStudentEmail').textContent = student.email;
+    document.getElementById('adminStudentId').textContent = student.studentId;
+    document.getElementById('adminStudentCourse').textContent = student.course;
+    document.getElementById('adminStudentYear').textContent = student.year;
+    document.getElementById('adminStudentStatus').textContent = student.status;
+    document.getElementById('adminStudentAppStatus').textContent = student.applicationStatus || 'N/A';
+    document.getElementById('adminStudentRegistered').textContent = formatDate(student.registered);
+    
+    // Show modal
+    document.getElementById('studentProfileModal').style.display = 'block';
+}
+
+function closeStudentProfileModal() {
+    document.getElementById('studentProfileModal').style.display = 'none';
+}
+
+function editStudent(studentId) {
+    showToast('Edit student functionality coming soon!', 'info');
+}
+
+function archiveStudent(studentId) {
+    if (confirm('Are you sure you want to archive this student?')) {
+        const student = students.find(s => s.id === studentId);
+        if (student) {
+            student.status = 'archived';
+            localStorage.setItem('students', JSON.stringify(students));
+            loadStudents();
+            showToast('Student archived successfully!', 'success');
+        }
+    }
+}
+
+// Application Management Functions
+function reviewApplication(applicationId) {
+    const application = applications.find(app => app.id === applicationId);
+    if (!application) return;
+    
+    currentApplicationId = applicationId;
+    
+    // Populate modal with application details
+    const detailsContainer = document.getElementById('applicationDetails');
+    detailsContainer.innerHTML = `
+        <div class="application-details">
+            <h4>Application Details</h4>
+            <div class="detail-row">
+                <strong>Name:</strong>
+                <span>${application.firstName} ${application.lastName}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Student ID:</strong>
+                <span>${application.studentId}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Email:</strong>
+                <span>${application.email}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Course:</strong>
+                <span>${application.course}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Year Level:</strong>
+                <span>${application.year}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Applied Date:</strong>
+                <span>${formatDate(application.appliedDate)}</span>
+            </div>
+            <div class="detail-row">
+                <strong>Status:</strong>
+                <span class="status-badge status-${application.status}">${application.status.toUpperCase()}</span>
+            </div>
+        </div>
+    `;
+    
+    // Show modal
+    document.getElementById('reviewModal').style.display = 'block';
+}
+
+function updateApplicationStatus(applicationId, status) {
+    const application = applications.find(app => app.id === applicationId);
+    if (!application) return;
+    
+    application.status = status;
+    application.reviewedDate = new Date().toISOString();
+    
+    // Save to localStorage
+    localStorage.setItem('applications', JSON.stringify(applications));
+    
+    // Reload applications
+    loadApplications();
+    
+    // Close modal if open
+    closeModal();
+    
+    // Show success message
+    showToast(`Application ${status} successfully!`, 'success');
+}
+
+// Filter and Search Functions
+function filterApplications() {
+    loadApplications();
+}
+
+function searchApplications() {
+    loadApplications();
+}
+
+function filterStudents() {
+    loadStudents();
+}
+
+function searchStudents() {
+    loadStudents();
+}
+
+// Sample Data
+const sampleStudents = [
+    {
+        id: 1,
+        firstName: "John",
+        lastName: "Doe",
+        studentId: "2023-001",
+        email: "john.doe@student.nemsu.edu.ph",
+        awardNumber: "AWD-001",
+        password: "password123",
+        course: "BSIT",
+        year: "2nd",
+        status: "active",
+        applicationStatus: "approved",
+        registered: "2023-01-15T08:00:00.000Z",
+        role: "student"
+    },
+    {
+        id: 2,
+        firstName: "Jane",
+        lastName: "Smith",
+        studentId: "2023-002",
+        email: "jane.smith@student.nemsu.edu.ph",
+        awardNumber: "AWD-002",
+        password: "password123",
+        course: "BSCS",
+        year: "3rd",
+        status: "active",
+        applicationStatus: "approved",
+        registered: "2023-01-20T08:00:00.000Z",
+        role: "student"
+    }
+];
+
+const sampleApplications = [
+    {
+        id: 1,
+        firstName: "Alice",
+        lastName: "Johnson",
+        studentId: "2023-003",
+        email: "alice.johnson@student.nemsu.edu.ph",
+        course: "BSBA",
+        year: "1st",
+        status: "pending",
+        appliedDate: "2023-12-01T08:00:00.000Z"
+    },
+    {
+        id: 2,
+        firstName: "Bob",
+        lastName: "Wilson",
+        studentId: "2023-004",
+        email: "bob.wilson@student.nemsu.edu.ph",
+        course: "BSEd",
+        year: "2nd",
+        status: "pending",
+        appliedDate: "2023-12-02T08:00:00.000Z"
+    }
+];
