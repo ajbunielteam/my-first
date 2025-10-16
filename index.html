@@ -985,6 +985,8 @@
             background: white;
         }
 
+        
+
         .student-entry {
             display: grid;
             grid-template-columns: 2fr 1.5fr 1.5fr auto;
@@ -1606,7 +1608,7 @@
         <div class="nav-container">
             <div class="nav-logo">
                 <img src="nemsulogo.png" alt="NEMSULOGO" width="80">
-                <span>GranTES</span>
+                <span> GranTES</span>
             </div>
             <div class="nav-menu">
                 <a href="#" class="nav-link" onclick="showHome()">Home</a>
@@ -1923,6 +1925,20 @@
                                                 <div class="tile-value" id="profileAwardNumber"></div>
                                             </div>
                                         </div>
+                                        <div class="profile-tile">
+                                            <div class="tile-icon"><i class="fas fa-people-group"></i></div>
+                                            <div class="tile-content">
+                                                <div class="tile-label">Indigenous People</div>
+                                                <div class="tile-value" id="profileIndigenous"></div>
+                                            </div>
+                                        </div>
+                                        <div class="profile-tile">
+                                            <div class="tile-icon"><i class="fas fa-wheelchair"></i></div>
+                                            <div class="tile-content">
+                                                <div class="tile-label">PWD's</div>
+                                                <div class="tile-value" id="profilePwd"></div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -2000,10 +2016,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <button class="quick-action-btn view-applications" onclick="showAdminTab('applications')">
-                                    <i class="fas fa-file-alt"></i>
-                                    <span>View Applications</span>
-                                </button>
+                                <!-- View Applications removed -->
                                 <button class="quick-action-btn manage-students" onclick="openManageStudents()">
                                     <i class="fas fa-users"></i>
                                     <span>Manage Students</span>
@@ -2066,7 +2079,7 @@
 
                         <!-- Navigation Tabs -->
                         <div class="admin-nav-tabs">
-                            <button class="nav-tab-btn" onclick="showAdminTab('applications')">Applications</button>
+                            <!-- Applications tab removed -->
                             <button class="nav-tab-btn" onclick="showAdminTab('students')">Students</button>
                             <button class="nav-tab-btn" onclick="showAdminTab('reports')">Reports</button>
                             <button class="nav-tab-btn active" onclick="showAdminTab('settings')">Settings</button>
@@ -2074,24 +2087,7 @@
 
                         <!-- Tab Content (hidden by default) -->
                         <div class="tab-content" style="display: none;">
-                    <!-- Applications Tab -->
-                    <div id="applications-tab" class="tab-panel active">
-                        <div class="applications-list">
-                            <h3>Student Applications</h3>
-                            <div class="filter-bar">
-                                <select id="statusFilter" onchange="filterApplications()">
-                                    <option value="">All Status</option>
-                                    <option value="pending">Pending</option>
-                                    <option value="approved">Approved</option>
-                                    <option value="rejected">Rejected</option>
-                                </select>
-                                <input type="text" id="searchStudents" placeholder="Search students..." onkeyup="searchApplications()">
-                            </div>
-                            <div id="applicationsContainer">
-                                <p class="no-data">No applications found.</p>
-                            </div>
-                        </div>
-                    </div>
+                    <!-- Applications Tab removed -->
 
                     <!-- Students Tab -->
                     <div id="students-tab" class="tab-panel">
@@ -2201,17 +2197,29 @@
                                 <div class="value" id="adminStudentYear"></div>
                             </div>
                             <div class="admin-student-tile">
-                                <div class="label">Status</div>
-                                <div class="value" id="adminStudentStatus"></div>
+                                <div class="label">Student ID</div>
+                                <div class="value" id="adminStudentIdValue"></div>
                             </div>
                             <div class="admin-student-tile">
-                                <div class="label">Application Status</div>
-                                <div class="value" id="adminStudentAppStatus"></div>
+                                <div class="label">Award Number</div>
+                                <div class="value" id="adminStudentAwardNumber"></div>
+                            </div>
+                            <div class="admin-student-tile">
+                                <div class="label">Status</div>
+                                <div class="value" id="adminStudentStatus"></div>
                             </div>
                             <div class="admin-student-tile">
                                 <div class="label">Registered</div>
                                 <div class="value" id="adminStudentRegistered"></div>
                             </div>
+                                <div class="admin-student-tile">
+                                    <div class="label">Indigenous People</div>
+                                    <div class="value" id="adminStudentIndigenous"></div>
+                                </div>
+                                <div class="admin-student-tile">
+                                    <div class="label">PWD's</div>
+                                    <div class="value" id="adminStudentPwd"></div>
+                                </div>
                         </div>
 
                         <!-- Admin-Student Messenger Chat -->
@@ -2271,8 +2279,8 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="adminStudentId">Student ID:</label>
-                        <input type="text" id="adminStudentId" required>
+                        <label for="adminStudentIdInput">Student ID:</label>
+                        <input type="text" id="adminStudentIdInput" required>
                     </div>
                     <div class="form-group">
                         <label for="adminEmail">Email:</label>
@@ -2304,6 +2312,20 @@
                                 <option value="3rd">3rd Year</option>
                                 <option value="4th">4th Year</option>
                             </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPhoto">ID Picture (optional):</label>
+                        <input type="file" id="adminPhoto" accept="image/*">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="adminIsIndigenous">INDIGENOUS PEOPLE:</label>
+                            <input type="checkbox" id="adminIsIndigenous">
+                        </div>
+                        <div class="form-group">
+                            <label for="adminIsPwd">PWD's:</label>
+                            <input type="checkbox" id="adminIsPwd">
                         </div>
                     </div>
                     <div class="modal-actions">
@@ -2514,7 +2536,7 @@
             const formData = {
                 firstName: document.getElementById('adminFirstName').value,
                 lastName: document.getElementById('adminLastName').value,
-                studentId: document.getElementById('adminStudentId').value,
+                studentId: document.getElementById('adminStudentIdInput').value,
                 email: document.getElementById('adminEmail').value,
                 awardNumber: document.getElementById('adminAwardNumber').value,
                 password: document.getElementById('adminPassword').value,
@@ -2595,8 +2617,9 @@
         function updateAdminStats() {
             const students = JSON.parse(localStorage.getItem('students') || '[]');
             const totalStudents = students.length;
-            const approvedStudents = students.filter(s => s.applicationStatus === 'approved').length;
-            const pendingStudents = students.filter(s => s.applicationStatus === 'pending').length;
+            // As requested, Indigenous People count is fixed to 0
+            const approvedStudents = students.filter(s => s.isIndigenous).length;
+            const pendingStudents = students.filter(s => s.isPwd).length;
             const archivedStudents = students.filter(s => s.status === 'archived').length;
 
             document.getElementById('totalStudents').textContent = totalStudents;
