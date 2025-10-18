@@ -1488,99 +1488,13 @@
             createPost('text');
         }
 
-        // Load posts feed
-        function loadPostsFeed() {
-            const postsFeed = document.getElementById('postsFeed');
-            
-            if (posts.length === 0) {
-                postsFeed.innerHTML = `
-                    <div class="welcome-message">
-                        <h3>Welcome to the Admin Dashboard</h3>
-                        <p>Manage student applications, view reports, and configure system settings from this central location.</p>
-                    </div>
-                `;
-                return;
-            }
+        // loadPostsFeed function removed - using the one from script.js instead
 
-            postsFeed.innerHTML = posts.map(post => `
-                <div class="post-card">
-                    <div class="post-header">
-                        <div class="post-author-avatar">
-                            <i class="fas fa-user-shield"></i>
-                        </div>
-                        <div class="post-author-info">
-                            <h4>${post.author}</h4>
-                            <p>${new Date(post.timestamp).toLocaleDateString()} at ${new Date(post.timestamp).toLocaleTimeString()}</p>
-                        </div>
-                        <span class="post-audience-badge ${post.audience}">
-                            ${post.audience === 'students' ? 'GranTES Students' : 'Home Page'}
-                        </span>
-                    </div>
-                    <div class="post-content">
-                        <div class="post-text">${post.content}</div>
-                        ${post.type === 'media' ? '<div class="post-media"><i class="fas fa-image"></i> Media attached</div>' : ''}
-                        ${post.type === 'live' ? '<div class="post-live"><i class="fas fa-video"></i> Live video</div>' : ''}
-                        ${post.type === 'feeling' ? '<div class="post-feeling"><i class="fas fa-smile"></i> Feeling/Activity</div>' : ''}
-                    </div>
-                    <div class="post-actions">
-                        <button class="post-action-btn" onclick="likePost(${post.id})">
-                            <i class="fas fa-thumbs-up"></i>
-                            <span>${post.likes}</span>
-                        </button>
-                        <button class="post-action-btn" onclick="commentPost(${post.id})">
-                            <i class="fas fa-comment"></i>
-                            <span>Comment</span>
-                        </button>
-                        <button class="post-action-btn" onclick="deletePost(${post.id})">
-                            <i class="fas fa-trash"></i>
-                            <span>Delete</span>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // Like post function
-        function likePost(postId) {
-            const post = posts.find(p => p.id === postId);
-            if (post) {
-                post.likes++;
-                localStorage.setItem('adminPosts', JSON.stringify(posts));
-                loadPostsFeed();
-            }
-        }
-
-        // Comment post function
-        function commentPost(postId) {
-            const comment = prompt('Enter your comment:');
-            if (comment && comment.trim()) {
-                const post = posts.find(p => p.id === postId);
-                if (post) {
-                    post.comments.push({
-                        id: Date.now(),
-                        content: comment,
-                        author: 'Administrator',
-                        timestamp: new Date().toISOString()
-                    });
-                    localStorage.setItem('adminPosts', JSON.stringify(posts));
-                    loadPostsFeed();
-                }
-            }
-        }
-
-        // Delete post function
-        function deletePost(postId) {
-            if (confirm('Are you sure you want to delete this post?')) {
-                posts = posts.filter(p => p.id !== postId);
-                localStorage.setItem('adminPosts', JSON.stringify(posts));
-                loadPostsFeed();
-                showNotification('Post deleted successfully', 'success');
-            }
-        }
+        // Post action functions removed - using the ones from script.js instead
 
         // Initialize admin homepage
         function initializeAdminHomepage() {
-            loadPostsFeed();
+            loadAdminPosts(); // Use the function from script.js
             
             // Add event listener for audience change
             const audienceSelect = document.getElementById('postAudience');
@@ -1598,5 +1512,74 @@
         });
     </script>
     <script src="script.js"></script>
+    
+    <!-- Auto-expand textareas functionality -->
+    <script>
+        // Auto-expand textareas when typing
+        function autoExpandTextarea(textarea) {
+            textarea.style.height = 'auto';
+            textarea.style.height = Math.min(textarea.scrollHeight, 200) + 'px';
+        }
+
+        // Add event listeners to all textareas for auto-expansion
+        document.addEventListener('DOMContentLoaded', function() {
+            // Function to add auto-expand to textareas
+            function addAutoExpandToTextareas() {
+                const textareas = document.querySelectorAll('textarea');
+                textareas.forEach(textarea => {
+                    // Remove existing listeners to avoid duplicates
+                    textarea.removeEventListener('input', textarea.autoExpandHandler);
+                    
+                    // Create new handler
+                    textarea.autoExpandHandler = function() {
+                        autoExpandTextarea(this);
+                    };
+                    
+                    // Add the event listener
+                    textarea.addEventListener('input', textarea.autoExpandHandler);
+                    
+                    // Set initial height
+                    autoExpandTextarea(textarea);
+                });
+            }
+            
+            // Add auto-expand to existing textareas
+            addAutoExpandToTextareas();
+            
+            // Watch for new textareas added dynamically
+            const observer = new MutationObserver(function(mutations) {
+                mutations.forEach(function(mutation) {
+                    if (mutation.type === 'childList') {
+                        mutation.addedNodes.forEach(function(node) {
+                            if (node.nodeType === 1) { // Element node
+                                if (node.tagName === 'TEXTAREA') {
+                                    node.autoExpandHandler = function() {
+                                        autoExpandTextarea(this);
+                                    };
+                                    node.addEventListener('input', node.autoExpandHandler);
+                                    autoExpandTextarea(node);
+                                }
+                                // Check for textareas within added nodes
+                                const textareas = node.querySelectorAll ? node.querySelectorAll('textarea') : [];
+                                textareas.forEach(textarea => {
+                                    textarea.autoExpandHandler = function() {
+                                        autoExpandTextarea(this);
+                                    };
+                                    textarea.addEventListener('input', textarea.autoExpandHandler);
+                                    autoExpandTextarea(textarea);
+                                });
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // Start observing
+            observer.observe(document.body, {
+                childList: true,
+                subtree: true
+            });
+        });
+    </script>
 </body>
 </html>
