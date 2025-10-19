@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -132,6 +133,17 @@
                     <div class="form-group">
                         <label for="confirmPassword">Confirm Password:</label>
                         <input type="password" id="confirmPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="department">Department:</label>
+                        <select id="department" required>
+                            <option value="">Select Department</option>
+                            <option value="Department of Computer Studies">Department of Computer Studies</option>
+                            <option value="Department of Business and Management">Department of Business and Management</option>
+                            <option value="Department of Industrial Technology">Department of Industrial Technology</option>
+                            <option value="Department of General Teacher Training">Department of General Teacher Training</option>
+                            <option value="College of Criminal Justice Education">College of Criminal Justice Education</option>
+                        </select>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -273,6 +285,20 @@
                                         <span class="status-badge" id="profileStatusMain"></span>
                                     </div>
                                     <div class="profile-info-grid">
+                                        <div class="profile-tile">
+                                            <div class="tile-icon"><i class="fas fa-building-columns"></i></div>
+                                            <div class="tile-content">
+                                                <div class="tile-label">Department</div>
+                                                <div class="tile-value" id="profileDepartmentMain"></div>
+                                            </div>
+                                        </div>
+                                        <div class="profile-tile">
+                                            <div class="tile-icon"><i class="fas fa-location-dot"></i></div>
+                                            <div class="tile-content">
+                                                <div class="tile-label">From</div>
+                                                <div class="tile-value" id="profilePlaceMain"></div>
+                                            </div>
+                                        </div>
                                         <div class="profile-tile">
                                             <div class="tile-icon"><i class="fas fa-book"></i></div>
                                             <div class="tile-content">
@@ -493,12 +519,14 @@
                             <h3>Reports & Analytics</h3>
                             <div class="report-cards">
                                 <div class="report-card">
-                                    <h4>Application Summary</h4>
-                                    <canvas id="applicationChart" width="400" height="200"></canvas>
+                                    <h4>Department Analysis</h4>
+                                    <canvas id="departmentChart" width="400" height="200"></canvas>
+                                    <div id="departmentSummary" class="report-summary"></div>
                                 </div>
                                 <div class="report-card">
-                                    <h4>Monthly Trends</h4>
-                                    <canvas id="trendChart" width="400" height="200"></canvas>
+                                    <h4>From Analysis</h4>
+                                    <canvas id="placeChart" width="400" height="200"></canvas>
+                                    <div id="placeSummary" class="report-summary"></div>
                                 </div>
                             </div>
                             <button class="btn btn-primary" onclick="generateReport()">Generate Report</button>
@@ -554,13 +582,16 @@
             </div>
             <div class="modal-body">
                 <div class="admin-student-profile">
+                    <!-- Left Column: Photo -->
                     <div class="admin-student-left">
                         <div class="admin-student-photo">
                             <img id="adminStudentPhoto" alt="Student ID Picture">
                         </div>
                         <div class="admin-student-photo-note">ID Picture preview</div>
                     </div>
-                    <div class="admin-student-right">
+                    
+                    <!-- Middle Column: Student Info -->
+                    <div class="admin-student-middle">
                         <div class="admin-student-name" id="adminStudentName"></div>
                         <div class="admin-student-meta">
                             <span id="adminStudentEmail"></span>
@@ -568,6 +599,14 @@
                             <span id="adminStudentId"></span>
                         </div>
                         <div class="admin-student-grid">
+                            <div class="admin-student-tile">
+                                <div class="label">Department</div>
+                                <div class="value" id="adminStudentDepartment"></div>
+                            </div>
+                            <div class="admin-student-tile">
+                                <div class="label">From</div>
+                                <div class="value" id="adminStudentPlace"></div>
+                            </div>
                             <div class="admin-student-tile">
                                 <div class="label">Course</div>
                                 <div class="value" id="adminStudentCourse"></div>
@@ -592,18 +631,20 @@
                                 <div class="label">Registered</div>
                                 <div class="value" id="adminStudentRegistered"></div>
                             </div>
-                                <div class="admin-student-tile">
-                                    <div class="label">Indigenous People</div>
-                                    <div class="value" id="adminStudentIndigenous"></div>
-                                </div>
-                                <div class="admin-student-tile">
-                                    <div class="label">PWD's</div>
-                                    <div class="value" id="adminStudentPwd"></div>
-                                </div>
+                            <div class="admin-student-tile">
+                                <div class="label">Indigenous People</div>
+                                <div class="value" id="adminStudentIndigenous"></div>
+                            </div>
+                            <div class="admin-student-tile">
+                                <div class="label">PWD's</div>
+                                <div class="value" id="adminStudentPwd"></div>
+                            </div>
                         </div>
-
-                        <!-- Admin-Student Messenger Chat -->
-                        <div class="profile-chat-container" style="margin-top: 1rem;">
+                    </div>
+                    
+                    <!-- Right Column: Chat -->
+                    <div class="admin-student-right">
+                        <div class="profile-chat-container">
                             <div class="profile-chat-header">
                                 <div style="display:flex; align-items:center; gap:0.75rem;">
                                     <div class="profile-avatar" style="width:36px; height:36px;">
@@ -677,6 +718,21 @@
                     <div class="form-group">
                         <label for="adminConfirmPassword">Confirm Password:</label>
                         <input type="password" id="adminConfirmPassword" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminDepartment">Department:</label>
+                        <select id="adminDepartment" required>
+                            <option value="">Select Department</option>
+                            <option value="Department of Computer Studies">Department of Computer Studies</option>
+                            <option value="Department of Business and Management">Department of Business and Management</option>
+                            <option value="Department of Industrial Technology">Department of Industrial Technology</option>
+                            <option value="Department of General Teacher Training">Department of General Teacher Training</option>
+                            <option value="College of Criminal Justice Education">College of Criminal Justice Education</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="adminPlace">From (Address/Origin):</label>
+                        <input type="text" id="adminPlace" placeholder="e.g., City, Province" required>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -821,20 +877,77 @@
     <div id="grantesListModal" class="modal">
         <div class="modal-content grantes-list-modal">
             <div class="modal-header">
-                <h3>List of GranTES Students</h3>
-                <span class="close" onclick="closeGrantesListModal()">&times;</span>
+                <div class="modal-header-content">
+                    <div class="modal-title-section">
+                        <i class="fas fa-graduation-cap"></i>
+                        <h3>List of GranTES Students</h3>
+                    </div>
+                    <div class="modal-actions">
+                        <span class="close" onclick="closeGrantesListModal()">&times;</span>
+                    </div>
+                </div>
             </div>
             <div class="modal-body">
                 <div class="grantes-list-container">
                     <div class="grantes-list-header">
-                        <div class="search-container">
-                            <input type="text" id="grantesSearch" placeholder="Search students..." onkeyup="searchGrantes()">
-                            <i class="fas fa-search"></i>
+                        <div class="search-and-filters">
+                            <div class="search-container">
+                                <input type="text" id="grantesSearch" placeholder="Search students by name, course, department..." onkeyup="searchGrantes()">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <div class="filter-controls">
+                                <select id="grantesStatusFilter" onchange="filterGrantesByStatus()">
+                                    <option value="">All Status</option>
+                                    <option value="active">Active</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                </select>
+                                <select id="grantesYearFilter" onchange="filterGrantesByYear()">
+                                    <option value="">All Years</option>
+                                    <option value="1st">1st Year</option>
+                                    <option value="2nd">2nd Year</option>
+                                    <option value="3rd">3rd Year</option>
+                                    <option value="4th">4th Year</option>
+                                </select>
+                            </div>
                         </div>
                         <div class="grantes-stats">
-                            <span id="totalGrantesCount">0</span> Total Students
+                            <div class="stat-item">
+                                <span class="stat-number" id="totalGrantesCount">0</span>
+                                <span class="stat-label">Total Students</span>
+                            </div>
                         </div>
                     </div>
+                    
+                    <!-- Table Header -->
+                    <div class="grantes-table-header">
+                        <div class="table-header-cell name-col">
+                            <span>Student Name</span>
+                            <button class="sort-btn" onclick="sortGrantes('name')" title="Sort by name">
+                                <i class="fas fa-sort"></i>
+                            </button>
+                        </div>
+                        <div class="table-header-cell department-col">
+                            <span>Department</span>
+                            <button class="sort-btn" onclick="sortGrantes('department')" title="Sort by department">
+                                <i class="fas fa-sort"></i>
+                            </button>
+                        </div>
+                        <div class="table-header-cell course-col">
+                            <span>Course</span>
+                            <button class="sort-btn" onclick="sortGrantes('course')" title="Sort by course">
+                                <i class="fas fa-sort"></i>
+                            </button>
+                        </div>
+                        <div class="table-header-cell year-col">
+                            <span>Year</span>
+                            <button class="sort-btn" onclick="sortGrantes('year')" title="Sort by year">
+                                <i class="fas fa-sort"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
                     <div class="grantes-list-content" id="grantesListContent">
                         <!-- Student list will be populated here -->
                     </div>
@@ -1364,57 +1477,223 @@
             document.getElementById('grantesListModal').style.display = 'none';
         }
 
+        // Global variables for sorting and filtering
+        let currentSortField = 'name';
+        let currentSortDirection = 'asc';
+        let filteredStudents = [];
+
         function loadGrantesList() {
             const students = JSON.parse(localStorage.getItem('students') || '[]');
             const container = document.getElementById('grantesListContent');
-            const countElement = document.getElementById('totalGrantesCount');
+            const totalCountElement = document.getElementById('totalGrantesCount');
             
-            countElement.textContent = students.length;
+            // Apply current filters
+            filteredStudents = applyFilters(students);
             
-            if (students.length === 0) {
+            // Update statistics
+            totalCountElement.textContent = students.length;
+            
+            if (filteredStudents.length === 0) {
                 container.innerHTML = `
                     <div class="no-grantes">
                         <i class="fas fa-users"></i>
                         <h4>No Students Found</h4>
-                        <p>No GranTES students have been registered yet.</p>
+                        <p>${students.length === 0 ? 'No GranTES students have been registered yet.' : 'No students match your current filters.'}</p>
                     </div>
                 `;
                 return;
             }
 
-            container.innerHTML = students.map(student => `
-                <div class="grantes-student-item" data-name="${student.firstName} ${student.lastName}" data-course="${student.course}" data-year="${student.year}">
+            // Sort the filtered students
+            const sortedStudents = sortStudents(filteredStudents, currentSortField, currentSortDirection);
+
+            container.innerHTML = sortedStudents.map(student => `
+                <div class="grantes-student-item" 
+                     data-name="${student.firstName} ${student.lastName}" 
+                     data-course="${student.course}" 
+                     data-year="${student.year}" 
+                     data-department="${student.department || ''}"
+                     data-status="${student.applicationStatus || 'active'}"
+                     data-email="${student.email || ''}"
+                     data-award="${student.awardNumber || ''}">
                     <div class="grantes-student-name">
                         <i class="fas fa-user-graduate"></i>
-                        ${student.firstName} ${student.lastName}
+                        <div>
+                            <div>${student.firstName} ${student.lastName}</div>
+                            <div style="font-size: 0.75rem; color: #64748b; font-weight: 400;">
+                                ${student.email || student.awardNumber || 'No contact info'}
+                            </div>
+                        </div>
                     </div>
-                    <div class="grantes-student-info">${student.course}</div>
-                    <div class="grantes-student-info">${student.year} Year</div>
-                    <div class="grantes-student-status ${student.applicationStatus || 'active'}">
-                        ${student.applicationStatus === 'approved' ? 'Approved' : 
-                          student.applicationStatus === 'pending' ? 'Pending' : 
-                          student.applicationStatus === 'rejected' ? 'Rejected' : 'Active'}
+                    <div class="grantes-student-info">
+                        <div class="grantes-student-department">${student.department || 'Not specified'}</div>
+                    </div>
+                    <div class="grantes-student-info">
+                        <div class="grantes-student-course">${student.course || 'Not specified'}</div>
+                    </div>
+                    <div class="grantes-student-info">
+                        <div class="grantes-student-year">${student.year || 'N/A'} Year</div>
                     </div>
                 </div>
             `).join('');
         }
 
-        function searchGrantes() {
-            const searchTerm = document.getElementById('grantesSearch').value.toLowerCase();
-            const studentItems = document.querySelectorAll('.grantes-student-item');
+        function getStatusText(status) {
+            switch(status) {
+                case 'approved': return 'Approved';
+                case 'pending': return 'Pending';
+                case 'rejected': return 'Rejected';
+                default: return 'Active';
+            }
+        }
+
+        function applyFilters(students) {
+            const searchTerm = (document.getElementById('grantesSearch')?.value || '').trim().toLowerCase();
+            const statusFilter = document.getElementById('grantesStatusFilter')?.value || '';
+            const yearFilter = document.getElementById('grantesYearFilter')?.value || '';
             
-            studentItems.forEach(item => {
-                const name = item.dataset.name.toLowerCase();
-                const course = item.dataset.course.toLowerCase();
-                const year = item.dataset.year.toLowerCase();
+            return students.filter(student => {
+                const matchesSearch = !searchTerm || 
+                    (student.firstName || '').toLowerCase().includes(searchTerm) ||
+                    (student.lastName || '').toLowerCase().includes(searchTerm) ||
+                    (student.email || '').toLowerCase().includes(searchTerm) ||
+                    (student.awardNumber || '').toLowerCase().includes(searchTerm) ||
+                    (student.course || '').toLowerCase().includes(searchTerm) ||
+                    (student.department || '').toLowerCase().includes(searchTerm) ||
+                    (student.year || '').toLowerCase().includes(searchTerm);
                 
-                if (name.includes(searchTerm) || course.includes(searchTerm) || year.includes(searchTerm)) {
-                    item.style.display = 'grid';
-                } else {
-                    item.style.display = 'none';
-                }
+                const matchesStatus = !statusFilter || (student.applicationStatus || 'active') === statusFilter;
+                const matchesYear = !yearFilter || (student.year || '').toLowerCase().includes(yearFilter.toLowerCase());
+                
+                return matchesSearch && matchesStatus && matchesYear;
             });
         }
+
+        function sortStudents(students, field, direction) {
+            return [...students].sort((a, b) => {
+                let aValue, bValue;
+                
+                switch(field) {
+                    case 'name':
+                        aValue = `${a.firstName} ${a.lastName}`.toLowerCase();
+                        bValue = `${b.firstName} ${b.lastName}`.toLowerCase();
+                        break;
+                    case 'department':
+                        aValue = (a.department || '').toLowerCase();
+                        bValue = (b.department || '').toLowerCase();
+                        break;
+                    case 'course':
+                        aValue = (a.course || '').toLowerCase();
+                        bValue = (b.course || '').toLowerCase();
+                        break;
+                    case 'status':
+                        aValue = (a.applicationStatus || 'active').toLowerCase();
+                        bValue = (b.applicationStatus || 'active').toLowerCase();
+                        break;
+                    default:
+                        aValue = (a[field] || '').toString().toLowerCase();
+                        bValue = (b[field] || '').toString().toLowerCase();
+                }
+                
+                if (aValue < bValue) return direction === 'asc' ? -1 : 1;
+                if (aValue > bValue) return direction === 'asc' ? 1 : -1;
+                return 0;
+            });
+        }
+
+        function sortGrantes(field) {
+            if (currentSortField === field) {
+                currentSortDirection = currentSortDirection === 'asc' ? 'desc' : 'asc';
+            } else {
+                currentSortField = field;
+                currentSortDirection = 'asc';
+            }
+            
+            // Update sort button icons
+            document.querySelectorAll('.sort-btn i').forEach(icon => {
+                icon.className = 'fas fa-sort';
+            });
+            
+            const currentSortBtn = document.querySelector(`[onclick="sortGrantes('${field}')"] i`);
+            if (currentSortBtn) {
+                currentSortBtn.className = currentSortDirection === 'asc' ? 'fas fa-sort-up' : 'fas fa-sort-down';
+            }
+            
+            loadGrantesList();
+        }
+
+        function filterGrantesByStatus() {
+            loadGrantesList();
+        }
+
+        function filterGrantesByYear() {
+            loadGrantesList();
+        }
+
+        function searchGrantes() {
+            loadGrantesList();
+        }
+
+        function viewStudentProfile(studentId) {
+            const students = JSON.parse(localStorage.getItem('students') || '[]');
+            const student = students.find(s => s.id == studentId);
+            
+            if (student) {
+                // Create a detailed profile modal or navigate to student details
+                const profileInfo = `
+                    <div style="padding: 1rem; background: white; border-radius: 8px; margin: 1rem 0;">
+                        <h3 style="color: #1e293b; margin-bottom: 1rem;">
+                            <i class="fas fa-user-graduate" style="color: #667eea; margin-right: 0.5rem;"></i>
+                            ${student.firstName} ${student.lastName}
+                        </h3>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; font-size: 0.9rem;">
+                            <div><strong>Email:</strong> ${student.email || 'Not provided'}</div>
+                            <div><strong>Award Number:</strong> ${student.awardNumber || 'Not provided'}</div>
+                            <div><strong>Student ID:</strong> ${student.studentId || 'Not provided'}</div>
+                            <div><strong>Course:</strong> ${student.course || 'Not provided'}</div>
+                            <div><strong>Year:</strong> ${student.year || 'Not provided'}</div>
+                            <div><strong>Department:</strong> ${student.department || 'Not provided'}</div>
+                            <div><strong>Status:</strong> 
+                                <span class="grantes-student-status ${student.applicationStatus || 'active'}">
+                                    ${getStatusText(student.applicationStatus)}
+                                </span>
+                            </div>
+                            <div><strong>Registration Date:</strong> ${student.registrationDate || 'Not available'}</div>
+                        </div>
+                    </div>
+                `;
+                
+                // You could show this in a modal or alert
+                alert(`Student Profile:\n\n${student.firstName} ${student.lastName}\nEmail: ${student.email || 'Not provided'}\nAward Number: ${student.awardNumber || 'Not provided'}\nCourse: ${student.course || 'Not provided'}\nYear: ${student.year || 'Not provided'}\nDepartment: ${student.department || 'Not provided'}\nStatus: ${getStatusText(student.applicationStatus)}`);
+            } else {
+                showToast('Student not found', 'error');
+            }
+        }
+
+        function sendMessageToStudent(studentId) {
+            const students = JSON.parse(localStorage.getItem('students') || '[]');
+            const student = students.find(s => s.id == studentId);
+            
+            if (student) {
+                // Open chat and focus on input
+                if (typeof openChat === 'function') {
+                    openChat();
+                    // Focus on chat input after a short delay
+                    setTimeout(() => {
+                        const chatInput = document.getElementById('chatInput');
+                        if (chatInput) {
+                            chatInput.focus();
+                            chatInput.value = `@${student.firstName} ${student.lastName} `;
+                        }
+                    }, 300);
+                } else {
+                    showToast('Chat feature not available', 'warning');
+                }
+            } else {
+                showToast('Student not found', 'error');
+            }
+        }
+
 
         // Close modal when clicking outside
         window.onclick = function(event) {
