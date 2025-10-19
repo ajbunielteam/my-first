@@ -150,8 +150,8 @@ body {
     grid-template-columns: 1fr 1fr;
     gap: 3rem;
     align-items: center;
-    margin-bottom: 4rem;
-    padding: 2rem 0;
+    margin-bottom: 2rem;
+    padding: 1rem 0;
 }
 
 .logo-content h1 {
@@ -1825,6 +1825,33 @@ body {
 }
 
 /* Reports */
+.report-summary {
+    margin-top: 10px;
+}
+.dept-summary-list {
+    list-style: none;
+    margin-top: 8px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 8px 16px;
+}
+.dept-summary-list li {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+.dept-color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex: 0 0 10px;
+}
+.dept-name { font-weight: 600; color: var(--text); }
+.dept-count { color: var(--muted); margin-left: auto; }
 .reports-section h3 {
     margin-bottom: 1.5rem;
     color: #333;
@@ -1979,25 +2006,28 @@ body {
 
 /* Admin Student Profile Modal */
 .admin-student-modal {
-    max-width: 1100px;
+    max-width: 1400px;
+    width: 95vw;
+    margin-top: 2vh;
 }
 
 .admin-student-profile {
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: 250px 1fr 300px;
     gap: 1.5rem;
+    height: 70vh;
 }
 
 @media (min-width: 1024px) {
     .admin-student-profile {
-        grid-template-columns: 360px 1fr;
+        grid-template-columns: 280px 1fr 350px;
         gap: 2rem;
     }
 }
 
 @media (min-width: 1280px) {
     .admin-student-profile {
-        grid-template-columns: 420px 1fr;
+        grid-template-columns: 320px 1fr 400px;
     }
 }
 
@@ -2102,9 +2132,20 @@ body {
     color: #666;
 }
 
-.admin-student-right {
-    display: grid;
+.admin-student-middle {
+    display: flex;
+    flex-direction: column;
     gap: 0.75rem;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.admin-student-right {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-left: 1px solid #e1e5e9;
+    padding-left: 1rem;
 }
 
 .admin-student-name {
@@ -2144,9 +2185,36 @@ body {
     color: #333;
 }
 
-@media (max-width: 768px) {
+/* Chat container in admin profile */
+.admin-student-right .profile-chat-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-top: 0;
+}
+
+.admin-student-right .profile-chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    max-height: calc(100% - 120px);
+}
+
+@media (max-width: 1024px) {
     .admin-student-profile {
         grid-template-columns: 1fr;
+        height: auto;
+    }
+    
+    .admin-student-right {
+        border-left: none;
+        border-top: 1px solid #e1e5e9;
+        padding-left: 0;
+        padding-top: 1rem;
+        margin-top: 1rem;
+    }
+    
+    .admin-student-right .profile-chat-container {
+        height: 400px;
     }
 }
 
@@ -2905,7 +2973,7 @@ body::before {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     border-radius: 12px;
     padding: 1.5rem;
-    margin: 2rem auto;
+    margin: 2rem auto 2rem;
     max-width: 800px;
     color: white;
     box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
@@ -3076,49 +3144,91 @@ body::before {
 
 /* GranTES List Modal Styles */
 .grantes-list-modal {
-    max-width: 900px;
+    max-width: 1200px;
     width: 95%;
     max-height: 90vh;
     overflow-y: auto;
+    margin: 0 auto;
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
 }
 
 .grantes-list-container {
-    padding: 1rem 0;
+    padding: 0;
 }
 
-.grantes-list-header {
+/* Enhanced Modal Header */
+.modal-header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+}
+
+.modal-title-section {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.modal-title-section i {
+    font-size: 1.5rem;
+    color: #667eea;
+}
+
+.modal-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.btn-sm {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+}
+
+/* Enhanced Header Section */
+.grantes-list-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 2px solid #e5e7eb;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.search-and-filters {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    flex: 1;
 }
 
 .search-container {
     position: relative;
-    flex: 1;
-    max-width: 300px;
+    max-width: 400px;
 }
 
 .search-container input {
     width: 100%;
     padding: 0.75rem 1rem 0.75rem 2.5rem;
-    border: 1px solid #d1d5db;
+    border: 2px solid #d1d5db;
     border-radius: 25px;
     font-size: 0.9rem;
     outline: none;
-    transition: border-color 0.3s ease;
+    transition: all 0.3s ease;
     box-sizing: border-box;
-    word-wrap: break-word;
-    word-break: break-word;
-    overflow-wrap: break-word;
-    overflow-x: hidden;
+    background: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .search-container input:focus {
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    transform: translateY(-1px);
 }
 
 .search-container i {
@@ -3130,28 +3240,124 @@ body::before {
     font-size: 0.9rem;
 }
 
-.grantes-stats {
-    font-weight: 600;
-    color: #374151;
-    font-size: 0.9rem;
+.filter-controls {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
 }
 
+.filter-controls select {
+    padding: 0.5rem 0.75rem;
+    border: 2px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    background: white;
+    color: #374151;
+    outline: none;
+    transition: all 0.3s ease;
+    min-width: 120px;
+}
+
+.filter-controls select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Enhanced Stats Section */
+.grantes-stats {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0.75rem 1rem;
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    min-width: 80px;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #667eea;
+    line-height: 1;
+}
+
+.stat-label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 0.25rem;
+}
+
+/* Table Header */
+.grantes-table-header {
+    display: grid;
+    grid-template-columns: 2fr 1.5fr 1fr 1fr;
+    gap: 1rem;
+    padding: 1rem 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 8px 8px 0 0;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.table-header-cell {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.sort-btn {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+}
+
+.sort-btn:hover {
+    background: rgba(255,255,255,0.2);
+    opacity: 1;
+}
+
+.sort-btn i {
+    font-size: 0.75rem;
+}
+
+/* Enhanced List Content */
 .grantes-list-content {
     max-height: 500px;
     overflow-y: auto;
     border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    border-top: none;
+    border-radius: 0 0 8px 8px;
     background: white;
 }
 
 .grantes-student-item {
     display: grid;
-    grid-template-columns: 2fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1.5fr 1fr 1fr;
     gap: 1rem;
-    padding: 1rem;
-    border-bottom: 1px solid #e5e7eb;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
     align-items: center;
-    transition: background-color 0.2s ease;
+    transition: all 0.2s ease;
+    position: relative;
 }
 
 .grantes-student-item:last-child {
@@ -3159,79 +3365,240 @@ body::before {
 }
 
 .grantes-student-item:nth-child(even) {
-    background: #f9fafb;
+    background: #f8fafc;
 }
 
 .grantes-student-item:hover {
-    background: #f3f4f6;
+    background: #e0f2fe;
+    transform: translateX(2px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+/* Enhanced Student Name */
 .grantes-student-name {
     font-weight: 600;
-    color: #374151;
+    color: #1e293b;
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.75rem;
+    font-size: 0.95rem;
 }
 
 .grantes-student-name i {
     color: #667eea;
+    font-size: 1.1rem;
+    background: #e0f2fe;
+    padding: 0.5rem;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
+/* Enhanced Info Display */
 .grantes-student-info {
     font-size: 0.875rem;
-    color: #6b7280;
+    color: #475569;
+    font-weight: 500;
 }
 
-.grantes-student-status {
-    display: inline-block;
+.grantes-student-department {
+    font-size: 0.8rem;
+    color: #64748b;
+    background: #f1f5f9;
     padding: 0.25rem 0.5rem;
-    border-radius: 12px;
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.grantes-student-course {
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.grantes-student-year {
+    font-size: 0.8rem;
+    color: #64748b;
+    background: #e0f2fe;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    display: inline-block;
+    margin-left: 0.5rem;
+}
+
+/* Enhanced Status Badges */
+.grantes-student-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.375rem 0.75rem;
+    border-radius: 20px;
     font-size: 0.75rem;
     font-weight: 600;
     text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 80px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .grantes-student-status.active {
-    background: #d1fae5;
-    color: #065f46;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
 }
 
 .grantes-student-status.pending {
-    background: #dbeafe;
-    color: #1e40af;
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
 }
 
 .grantes-student-status.approved {
-    background: #d1fae5;
-    color: #065f46;
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
 }
 
 .grantes-student-status.rejected {
-    background: #fee2e2;
-    color: #991b1b;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
 }
 
+/* Action Buttons */
+.grantes-student-actions {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.action-btn {
+    padding: 0.375rem 0.75rem;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.action-btn.view {
+    background: #e0f2fe;
+    color: #0369a1;
+    border: 1px solid #bae6fd;
+}
+
+.action-btn.view:hover {
+    background: #0369a1;
+    color: white;
+}
+
+.action-btn.message {
+    background: #f0fdf4;
+    color: #16a34a;
+    border: 1px solid #bbf7d0;
+}
+
+.action-btn.message:hover {
+    background: #16a34a;
+    color: white;
+}
+
+/* No Data State */
 .no-grantes {
     text-align: center;
-    padding: 3rem 2rem;
+    padding: 4rem 2rem;
     color: #6b7280;
+    background: #f8fafc;
+    border-radius: 8px;
+    margin: 1rem;
 }
 
 .no-grantes i {
-    font-size: 3rem;
+    font-size: 4rem;
     margin-bottom: 1rem;
     opacity: 0.5;
+    color: #cbd5e1;
 }
 
 .no-grantes h4 {
     margin: 0 0 0.5rem 0;
-    color: #374151;
+    color: #475569;
+    font-size: 1.25rem;
 }
 
 .no-grantes p {
     margin: 0;
     font-size: 0.875rem;
+    color: #64748b;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .grantes-list-modal {
+        width: 98%;
+        max-width: none;
+    }
+    
+    .grantes-list-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .search-and-filters {
+        width: 100%;
+    }
+    
+    .search-container {
+        max-width: none;
+    }
+    
+    .filter-controls {
+        flex-direction: column;
+    }
+    
+    .filter-controls select {
+        width: 100%;
+    }
+    
+    .grantes-stats {
+        justify-content: center;
+        width: 100%;
+    }
+    
+    .grantes-table-header,
+    .grantes-student-item {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+        text-align: left;
+    }
+    
+    .table-header-cell {
+        justify-content: flex-start;
+    }
+    
+    .grantes-student-item {
+        padding: 1rem;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        margin-bottom: 0.5rem;
+    }
+    
+    .grantes-student-name {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+    }
+    
+    .grantes-student-info {
+        margin-bottom: 0.25rem;
+    }
+    
+    .grantes-student-actions {
+        justify-content: flex-start;
+        margin-top: 0.5rem;
+    }
 }
 
 /* Enhanced Post Creation Styles */
