@@ -191,6 +191,7 @@ function handleRegister(event) {
         email: document.getElementById('registerEmail').value,
         password: document.getElementById('registerPassword').value,
         confirmPassword: document.getElementById('confirmPassword').value,
+        department: document.getElementById('department').value,
         course: document.getElementById('course').value,
         year: document.getElementById('year').value
     };
@@ -221,6 +222,7 @@ function handleRegister(event) {
         studentId: formData.studentId,
         email: formData.email,
         password: formData.password, // In real app, this should be hashed
+        department: formData.department,
         course: formData.course,
         year: formData.year,
         status: 'active',
@@ -331,7 +333,7 @@ function handleLogin(event) {
     console.log('Login attempt:', { role, email, password });
     
     // First, accept admin credentials regardless of selected role to avoid UX issues
-    if ((email === 'admin@grantes.com' || email === 'admin@grantes.local') && password === 'admin123') {
+    if ((email === 'admin@grantes.com' || email === 'admin@grantes.local' || email === 'admin') && password === 'admin123') {
         currentUser = {
             id: 'admin',
             name: 'Administrator',
@@ -344,7 +346,7 @@ function handleLogin(event) {
         if (document && document.body) {
             document.body.classList.add('logged-in');
             document.body.classList.add('admin-logged-in');
-        }
+        } 
         try { updateNavigation(); } catch (_) { /* ignore */ }
         showToast('Login successful!', 'success');
         showDashboard();
@@ -353,7 +355,7 @@ function handleLogin(event) {
 
     if (role === 'admin') {
         // Admin login (hardcoded for demo)
-        if ((email === 'admin@grantes.com' || email === 'admin@grantes.local') && password === 'admin123') {
+        if ((email === 'admin@grantes.com' || email === 'admin@grantes.local' || email === 'admin') && password === 'admin123') {
             currentUser = {
                 id: 'admin',
                 name: 'Administrator',
@@ -537,6 +539,10 @@ function loadStudentProfile() {
     if (emailMain) emailMain.textContent = student.email;
     const courseMain = document.getElementById('profileCourseMain');
     if (courseMain) courseMain.textContent = student.course;
+    const deptMain = document.getElementById('profileDepartmentMain');
+    if (deptMain) deptMain.textContent = student.department || '';
+    const placeMain = document.getElementById('profilePlaceMain');
+    if (placeMain) placeMain.textContent = student.place || '';
     const yearMain = document.getElementById('profileYearMain');
     if (yearMain) yearMain.textContent = student.year;
     const awardMain = document.getElementById('profileAwardNumberMain');
@@ -990,6 +996,10 @@ function loadReports() {
     // Simple chart implementation (in a real app, you'd use a charting library)
     const applicationChart = document.getElementById('applicationChart');
     const trendChart = document.getElementById('trendChart');
+    const departmentChart = document.getElementById('departmentChart');
+    const departmentSummary = document.getElementById('departmentSummary');
+    const placeChart = document.getElementById('placeChart');
+    const placeSummary = document.getElementById('placeSummary');
     
     if (applicationChart && trendChart) {
         drawSimpleChart(applicationChart, {
@@ -1005,9 +1015,74 @@ function loadReports() {
             apr: 15
         });
     }
+
+    // Department analysis
+    if (departmentChart && departmentSummary) {
+        const storedStudents = JSON.parse(localStorage.getItem('students') || '[]');
+        const deptCounts = storedStudents.reduce((acc, s) => {
+            const dept = (s && s.department) ? s.department : 'Unspecified';
+            acc[dept] = (acc[dept] || 0) + 1;
+            return acc;
+        }, {});
+        if (Object.keys(deptCounts).length === 0) {
+            departmentSummary.innerHTML = '<p class="no-data">No department data available.</p>';
+        } else {
+            // Render chart
+            drawSimpleChart(departmentChart, deptCounts);
+            // Render summary list
+            const total = Object.values(deptCounts).reduce((a, b) => a + b, 0);
+            const sorted = Object.entries(deptCounts).sort((a, b) => b[1] - a[1]);
+            departmentSummary.innerHTML = `
+                <ul class="dept-summary-list">
+                    ${sorted.map(([name, count], idx) => {
+                        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                        const color = `hsl(${(idx * 53) % 360}, 70%, 55%)`;
+                        const abbr = abbreviateDepartment(name);
+                        return `<li title="${name}">
+                            <span class="dept-color-dot" style="background:${color}"></span>
+                            <span class="dept-name">${abbr}</span>
+                            <span class="dept-count">${count} (${pct}%)</span>
+                        </li>`;
+                    }).join('')}
+                </ul>
+            `;
+        }
+    }
 }
 
-function drawSimpleChart(canvas, data) {
+    // Place (From) analysis (counts and percentage summary)
+    if (placeChart && placeSummary) {
+        const storedStudents = JSON.parse(localStorage.getItem('students') || '[]');
+        const placeCounts = storedStudents.reduce((acc, s) => {
+            const place = (s && s.place && s.place.trim()) ? s.place.trim() : 'Unspecified';
+            acc[place] = (acc[place] || 0) + 1;
+            return acc;
+        }, {});
+        if (Object.keys(placeCounts).length === 0) {
+            placeSummary.innerHTML = '<p class="no-data">No origin data available.</p>';
+            const ctx = placeChart.getContext('2d');
+            ctx.clearRect(0, 0, placeChart.width, placeChart.height);
+        } else {
+            drawSimpleChart(placeChart, placeCounts);
+            const total = Object.values(placeCounts).reduce((a, b) => a + b, 0);
+            const sorted = Object.entries(placeCounts).sort((a, b) => b[1] - a[1]).slice(0, 12);
+            placeSummary.innerHTML = `
+                <ul class="dept-summary-list">
+                    ${sorted.map(([name, count], idx) => {
+                        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                        const color = `hsl(${(idx * 53) % 360}, 70%, 55%)`;
+                        return `<li title="${name}">
+                            <span class="dept-color-dot" style="background:${color}"></span>
+                            <span class="dept-name">${name}</span>
+                            <span class="dept-count">${count} (${pct}%)</span>
+                        </li>`;
+                    }).join('')}
+                </ul>
+            `;
+        }
+    }
+
+function drawSimpleChart(canvas, data, opts) {
     const ctx = canvas.getContext('2d');
     const width = canvas.width;
     const height = canvas.height;
@@ -1015,22 +1090,65 @@ function drawSimpleChart(canvas, data) {
     ctx.clearRect(0, 0, width, height);
     
     const maxValue = Math.max(...Object.values(data));
-    const barWidth = width / Object.keys(data).length - 10;
+    const labels = Object.keys(data);
+    const values = Object.values(data);
+    const count = labels.length;
+    const padding = 10;
+    const barWidth = Math.max(20, Math.floor(width / count) - padding);
+    const labelColor = '#374151';
+    const hideLabels = !!(opts && opts.hideLabels);
+    const labelFormatter = (opts && typeof opts.labelFormatter === 'function') ? opts.labelFormatter : (t) => t;
     
-    Object.entries(data).forEach(([key, value], index) => {
-        const barHeight = (value / maxValue) * (height - 40);
-        const x = index * (barWidth + 10) + 5;
-        const y = height - barHeight - 20;
-        
-        ctx.fillStyle = `hsl(${index * 120}, 70%, 50%)`;
+    labels.forEach((key, index) => {
+        const value = values[index];
+        const bottomSpace = hideLabels ? 8 : 18;
+        const barHeight = maxValue > 0 ? (value / maxValue) * (height - (32 + bottomSpace)) : 0;
+        const x = index * (barWidth + padding) + 5;
+        const y = height - barHeight - (16 + bottomSpace);
+
+        // Bar color with spaced hues for readability
+        ctx.fillStyle = `hsl(${(index * 53) % 360}, 70%, 55%)`;
         ctx.fillRect(x, y, barWidth, barHeight);
-        
-        ctx.fillStyle = '#333';
+
+        // Value label above bar
+        ctx.fillStyle = labelColor;
         ctx.font = '12px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText(key, x + barWidth/2, height - 5);
-        ctx.fillText(value.toString(), x + barWidth/2, y - 5);
+        ctx.fillText(String(value), x + barWidth/2, y - 6);
+
+        // Optional label under bar
+        if (!hideLabels) {
+            const text = labelFormatter(key);
+            ctx.save();
+            ctx.fillStyle = labelColor;
+            ctx.translate(x + barWidth/2, height - 6);
+            ctx.rotate(0);
+            ctx.fillText(text, 0, 0);
+            ctx.restore();
+        }
     });
+}
+
+function abbreviateDepartment(name) {
+    if (!name) return '';
+    const mapping = {
+        'Department of Computer Studies': 'DCS',
+        'Department of Business and Management': 'DBM',
+        'Department of Industrial Technology': 'DIT',
+        'Department of General Teacher Training': 'DGTT',
+        'College of Criminal Justice Education': 'CCJE',
+        'Unspecified': 'Unspecified'
+    };
+    if (mapping[name]) return mapping[name];
+    // Generic fallback: collapse common prefixes and shorten words
+    return name
+        .replace(/^Department of\s+/i, '')
+        .replace(/and/gi, '&')
+        .replace(/Education/gi, 'Edu')
+        .replace(/Management/gi, 'Mgmt')
+        .replace(/Technology/gi, 'Tech')
+        .replace(/General/gi, 'Gen')
+        .trim();
 }
 
 // Application Management Functions
@@ -1131,6 +1249,10 @@ function openStudentProfileModal(studentId) {
     document.getElementById('adminStudentEmail').textContent = student.email;
     // Keep the header meta showing the correct Student ID (not award number)
     document.getElementById('adminStudentId').textContent = student.studentId || '';
+    const adminDeptEl = document.getElementById('adminStudentDepartment');
+    if (adminDeptEl) { adminDeptEl.textContent = student.department || ''; }
+    const adminPlaceEl = document.getElementById('adminStudentPlace');
+    if (adminPlaceEl) { adminPlaceEl.textContent = student.place || ''; }
     document.getElementById('adminStudentCourse').textContent = student.course;
     document.getElementById('adminStudentYear').textContent = student.year;
     const adminStudentIdValueEl = document.getElementById('adminStudentIdValue');
@@ -2302,13 +2424,15 @@ function handleStudentRegistration(event) {
     const password = document.getElementById('adminPassword').value;
     const confirmPassword = document.getElementById('adminConfirmPassword').value;
     const course = (document.getElementById('adminCourse').value || '').trim();
+    const place = (document.getElementById('adminPlace') && document.getElementById('adminPlace').value || '').trim();
+    const department = (document.getElementById('adminDepartment') && document.getElementById('adminDepartment').value || '').trim();
     const year = (document.getElementById('adminYear').value || '').trim();
     const photoFile = document.getElementById('adminPhoto') ? document.getElementById('adminPhoto').files[0] : null;
     const isIndigenous = document.getElementById('adminIsIndigenous') ? document.getElementById('adminIsIndigenous').checked : false;
     const isPwd = document.getElementById('adminIsPwd') ? document.getElementById('adminIsPwd').checked : false;
     
     // Basic required validation
-    if (!firstName || !lastName || !studentId || !email || !awardNumber || !course || !year) {
+    if (!firstName || !lastName || !studentId || !email || !awardNumber || !department || !place || !course || !year) {
         showToast('Please complete all required fields', 'error');
         return;
     }
@@ -2350,6 +2474,8 @@ function handleStudentRegistration(event) {
             email: email,
             awardNumber: awardNumber,
             password: password,
+            department: department,
+            place: place,
             course: course,
             year: year,
             status: 'active',
@@ -2541,8 +2667,76 @@ function loadStudents() {
 
 // Load Reports Tab
 function loadReports() {
-    // This would load charts and reports
-    showToast('Reports loaded successfully!', 'success');
+    const departmentChart = document.getElementById('departmentChart');
+    const departmentSummary = document.getElementById('departmentSummary');
+    const placeChart = document.getElementById('placeChart');
+    const placeSummary = document.getElementById('placeSummary');
+
+    // Department analysis
+    if (departmentChart && departmentSummary) {
+        const studentsArr = JSON.parse(localStorage.getItem('students') || '[]');
+        const deptCounts = studentsArr.reduce((acc, s) => {
+            const d = (s && s.department) ? s.department : 'Unspecified';
+            acc[d] = (acc[d] || 0) + 1;
+            return acc;
+        }, {});
+        if (Object.keys(deptCounts).length === 0) {
+            departmentSummary.innerHTML = '<p class="no-data">No department data available.</p>';
+            const ctx = departmentChart.getContext('2d');
+            ctx.clearRect(0, 0, departmentChart.width, departmentChart.height);
+        } else {
+            drawSimpleChart(departmentChart, deptCounts, { hideLabels: false, labelFormatter: abbreviateDepartment });
+            const total = Object.values(deptCounts).reduce((a, b) => a + b, 0);
+            const sorted = Object.entries(deptCounts).sort((a, b) => b[1] - a[1]);
+            departmentSummary.innerHTML = `
+                <ul class="dept-summary-list">
+                    ${sorted.map(([name, count], idx) => {
+                        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                        const color = `hsl(${(idx * 53) % 360}, 70%, 55%)`;
+                        const abbr = abbreviateDepartment(name);
+                        return `<li title="${name}">
+                            <span class="dept-color-dot" style="background:${color}"></span>
+                            <span class="dept-name">${abbr}</span>
+                            <span class="dept-count">${count} (${pct}%)</span>
+                        </li>`;
+                    }).join('')}
+                </ul>
+            `;
+        }
+    }
+
+    // From (place) analysis
+    if (placeChart && placeSummary) {
+        const studentsArr = JSON.parse(localStorage.getItem('students') || '[]');
+        const placeCounts = studentsArr.reduce((acc, s) => {
+            const p = (s && s.place && s.place.trim()) ? s.place.trim() : 'Unspecified';
+            acc[p] = (acc[p] || 0) + 1;
+            return acc;
+        }, {});
+        if (Object.keys(placeCounts).length === 0) {
+            placeSummary.innerHTML = '<p class="no-data">No origin data available.</p>';
+            const ctx = placeChart.getContext('2d');
+            ctx.clearRect(0, 0, placeChart.width, placeChart.height);
+        } else {
+            // Hide labels under bars; values only on top
+            drawSimpleChart(placeChart, placeCounts, { hideLabels: true });
+            const total = Object.values(placeCounts).reduce((a, b) => a + b, 0);
+            const sorted = Object.entries(placeCounts).sort((a, b) => b[1] - a[1]).slice(0, 12);
+            placeSummary.innerHTML = `
+                <ul class="dept-summary-list">
+                    ${sorted.map(([name, count], idx) => {
+                        const pct = total > 0 ? Math.round((count / total) * 100) : 0;
+                        const color = `hsl(${(idx * 53) % 360}, 70%, 55%)`;
+                        return `<li title="${name}">
+                            <span class="dept-color-dot" style="background:${color}"></span>
+                            <span class="dept-name">${(name || 'Unspecified').toLowerCase()}</span>
+                            <span class="dept-count">${count} (${pct}%)</span>
+                        </li>`;
+                    }).join('')}
+                </ul>
+            `;
+        }
+    }
 }
 
 // Load Settings Tab
