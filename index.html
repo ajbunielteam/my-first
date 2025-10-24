@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -27,44 +26,105 @@
     <div class="main-container">
         <!-- Home Section -->
         <section id="home" class="section active">
-            <div class="logo">
-                <div class="logo-content">
-                    <h1>Smart Subsidy Management System</h1>
-                    <p>Streamline your educational subsidy applications with our comprehensive management platform</p>
-                    <a href="https://docs.google.com/forms/d/e/1FAIpQLSejN9ltqtPy2eiC3TtPXPBl0bGLwwb6UjfbT5YITEVl8BiOcA/viewform?usp=header" target="_blank" class="btn btn-primary btn-large">Apply Here</a>
-                </div>
-                <div class="logo-image">
-                    <img src="nemsulogo.png" alt="NEMSULOGO" width="300">
+            <!-- Enhanced Hero Section -->
+            <div class="hero-section">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <div class="hero-badge">
+                            <i class="fas fa-graduation-cap"></i>
+                            <span>NEMSU GranTES Program</span>
+                        </div>
+                        <h1 class="hero-title">
+                            Smart Subsidy Management System
+                            <span class="hero-subtitle">Empowering Students Through Technology</span>
+                        </h1>
+                        <p class="hero-description">
+                            Streamline your educational subsidy applications with our comprehensive management platform. 
+                            Access financial assistance, track applications, and stay connected with the administration.
+                        </p>
+                        <div class="hero-actions">
+                            <a href="https://docs.google.com/forms/d/e/1FAIpQLSejN9ltqtPy2eiC3TtPXPBl0bGLwwb6UjfbT5YITEVl8BiOcA/viewform?usp=header" target="_blank" class="btn btn-primary btn-large">
+                                <i class="fas fa-paper-plane"></i>
+                                Apply Now
+                            </a>
+                            <button class="btn btn-outline btn-large" onclick="showLogin()">
+                                <i class="fas fa-sign-in-alt"></i>
+                                Student Login
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hero-visual">
+                        <div class="hero-image-container">
+                            <img src="nemsulogo.png" alt="NEMSU Logo" class="hero-logo">
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Quick Links Section -->
+            <!-- Enhanced Quick Links Section -->
             <div class="quick-links-section">
-                <div class="quick-links-header">
-                    <i class="fas fa-link"></i>
-                    <h4>Quick Links</h4>
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="fas fa-link"></i>
+                        <h3>Quick Access</h3>
+                    </div>
+                    <p class="section-subtitle">Essential links and resources for students</p>
                 </div>
-                <div class="quick-links-buttons">
-                    <a href="https://ched.gov.ph/" target="_blank" class="quick-link-btn">
-                        <i class="fas fa-graduation-cap"></i>
-                        CHED Website
+                <div class="quick-links-grid">
+                    <a href="https://ched.gov.ph/" target="_blank" class="quick-link-card">
+                        <div class="card-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="card-content">
+                            <h4>CHED Website</h4>
+                            <p>Official Commission on Higher Education portal</p>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-external-link-alt"></i>
+                        </div>
                     </a>
-                    <button class="quick-link-btn" onclick="showGrantesList()">
-                        <i class="fas fa-list"></i>
-                        List of GranTES
+                    <button class="quick-link-card" onclick="showGrantesList()">
+                        <div class="card-icon">
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="card-content">
+                            <h4>GranTES Directory</h4>
+                            <p>View all registered GranTES students</p>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
+                    </button>
+                    <button class="quick-link-card" onclick="showLogin()">
+                        <div class="card-icon">
+                            <i class="fas fa-sign-in-alt"></i>
+                        </div>
+                        <div class="card-content">
+                            <h4>Student Portal</h4>
+                            <p>Access your personal dashboard</p>
+                        </div>
+                        <div class="card-arrow">
+                            <i class="fas fa-arrow-right"></i>
+                        </div>
                     </button>
                 </div>
             </div>
 
-            <!-- Public Posts Feed (Home audience) -->
-            <div class="home-feed">
-                <div class="posts-feed" id="homeFeed">
-                    <!-- Home posts will render here -->
+            <!-- Enhanced Announcements Section -->
+            <div class="announcements-section">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i class="fas fa-bullhorn"></i>
+                        <h3>Latest Announcements</h3>
+                    </div>
+                    <p class="section-subtitle">Stay updated with important news and updates</p>
+                </div>
+                <div class="announcements-container">
+                    <div class="posts-feed" id="homeFeed">
+                        <!-- Home posts will render here -->
+                    </div>
                 </div>
             </div>
-
-            
-            
         </section>
 
         <!-- Login Section -->
@@ -203,10 +263,10 @@
                             <i class="fas fa-home"></i>
                             Student Homepage
                         </button>
-                        <div class="user-info">
-                            <span id="studentName"></span>
-                            <button class="btn btn-secondary" onclick="logout()">Logout</button>
-                        </div>
+                            <div class="user-info">
+                                <span id="studentName"></span>
+                                <button class="btn btn-secondary" onclick="logout()">Logout</button>
+                            </div>
                     </div>
 
                     <div class="admin-content-body">
@@ -222,7 +282,7 @@
                         </div>
 
                         <!-- Navigation Tabs -->
-                        <div class="admin-nav-tabs">
+                        <div class="admin-nav-tabs" style="display:none;">
                             <button class="nav-tab-btn" onclick="showStudentTab('announcements')">Announcements</button>
                             <button class="nav-tab-btn" onclick="showStudentTab('messages')">Messages</button>
                         </div>
@@ -371,7 +431,7 @@
                                 <p id="totalPending">0</p>
                             </div>
                         </div>
-                        <div class="sidebar-stat-card">
+                        <div class="sidebar-stat-card" onclick="viewArchived()" style="cursor:pointer;">
                             <i class="fas fa-archive"></i>
                             <div class="stat-info">
                                 <h3>Archived</h3>
@@ -500,11 +560,6 @@
                         <div class="students-list">
                             <h3>Student Records</h3>
                             <div class="filter-bar">
-                                <select id="studentStatusFilter" onchange="filterStudents()">
-                                    <option value="">All Students</option>
-                                    <option value="active">Active</option>
-                                    <option value="archived">Archived</option>
-                                </select>
                                 <input type="text" id="searchStudentRecords" placeholder="Search students..." onkeyup="searchStudents()">
                             </div>
                             <div id="studentsContainer">
@@ -539,12 +594,55 @@
                             <h3>System Settings</h3>
                             <div class="settings-form">
                                 <div class="form-group">
-                                    <label for="subsidyTypes">Subsidy Types:</label>
-                                    <textarea id="subsidyTypes" rows="3" placeholder="Enter subsidy types (one per line)"></textarea>
+                                    <label for="adminEmailSetting">Admin Email:</label>
+                                    <input type="email" id="adminEmailSetting" placeholder="Enter admin email">
                                 </div>
                                 <div class="form-group">
-                                    <label for="systemMessage">System Message:</label>
-                                    <textarea id="systemMessage" rows="3" placeholder="Global message for all users"></textarea>
+                                    <label for="adminPasswordSetting">Admin Password:</label>
+                                    <input type="password" id="adminPasswordSetting" placeholder="Enter new password">
+                                </div>
+                                <div class="form-group">
+                                    <label for="adminPasswordConfirmSetting">Confirm Password:</label>
+                                    <input type="password" id="adminPasswordConfirmSetting" placeholder="Confirm new password">
+                                </div>
+                                <div class="form-group">
+                                    <h4 style="margin-bottom:0.5rem;">Update Student Credentials</h4>
+                                    <div class="form-group" style="margin-top:0.5rem;">
+                                        <label for="adminStudentLookup">Student Identifier (Award No. / Student ID / Email)</label>
+                                        <input type="text" id="adminStudentLookup" placeholder="Type to search... e.g., AW2025001, STU0001, name or email">
+                                        <input type="hidden" id="adminSelectedStudentId">
+                                        <div id="adminStudentSearchResults" class="admin-search-results"></div>
+                                        <div id="adminSelectedStudentSummary" class="selected-student-summary" style="display:none;">
+                                            <div class="summary-main">
+                                                <div class="summary-name" id="adminSelectedStudentName"></div>
+                                                <div class="summary-meta" id="adminSelectedStudentMeta"></div>
+                                            </div>
+                                            <button type="button" class="btn btn-secondary btn-sm" onclick="clearSelectedStudent()">Clear</button>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label for="adminStudentNewAward">New Award Number</label>
+                                            <input type="text" id="adminStudentNewAward" placeholder="Leave blank to keep current" disabled>
+                                            <div id="adminAwardValidation" class="input-hint"></div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="adminStudentNewPassword">New Password</label>
+                                            <input type="password" id="adminStudentNewPassword" placeholder="Leave blank to keep current" disabled>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="adminStudentNewPasswordConfirm">Confirm New Password</label>
+                                        <input type="password" id="adminStudentNewPasswordConfirm" placeholder="Confirm new password" disabled>
+                                        <div class="form-row" style="margin-top: 0.5rem;">
+                                            <label style="display:flex; align-items:center; gap:8px;">
+                                                <input type="checkbox" id="adminShowPasswords" disabled>
+                                                <span>Show passwords</span>
+                                            </label>
+                                        </div>
+                                        <div id="adminPasswordValidation" class="input-hint"></div>
+                                    </div>
+                                    <button id="adminUpdateStudentBtn" class="btn btn-primary" onclick="updateStudentCredentialsFromSettings()" disabled>Update Student Account</button>
                                 </div>
                                 <button class="btn btn-primary" onclick="updateSettings()">Update Settings</button>
                             </div>
@@ -680,79 +778,175 @@
         </div>
     </div>
 
+    <!-- Edit Student Modal -->
+    <div id="editStudentModal" class="modal">
+        <div class="modal-content student-registration-modal wide-modal">
+            <div class="modal-header">
+                <h3>Edit Student Information</h3>
+                <span class="close" onclick="closeEditStudentModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="editStudentForm" onsubmit="handleEditStudent(event)">
+                    <input type="hidden" id="editStudentId">
+                        <div class="form-grid-3">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editFirstName">First Name:</label>
+                            <input type="text" id="editFirstName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editLastName">Last Name:</label>
+                            <input type="text" id="editLastName" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editStudentIdInput">Student ID:</label>
+                            <input type="text" id="editStudentIdInput" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="editEmail">Email:</label>
+                            <input type="email" id="editEmail" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editDepartment">Department:</label>
+                            <select id="editDepartment" required>
+                                <option value="">Select Department</option>
+                                <option value="Department of Computer Studies">Department of Computer Studies</option>
+                                <option value="Department of Business and Management">Department of Business and Management</option>
+                                <option value="Department of Industrial Technology">Department of Industrial Technology</option>
+                                <option value="Department of General Teacher Training">Department of General Teacher Training</option>
+                                <option value="College of Criminal Justice Education">College of Criminal Justice Education</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="editPlace">From (Address/Origin):</label>
+                            <input type="text" id="editPlace" placeholder="e.g., City, Province" required>
+                        </div>
+                    </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="editCourse">Course:</label>
+                                <input type="text" id="editCourse" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="editYear">Year Level:</label>
+                                <select id="editYear" required>
+                                    <option value="">Select Year</option>
+                                    <option value="1st">1st Year</option>
+                                    <option value="2nd">2nd Year</option>
+                                    <option value="3rd">3rd Year</option>
+                                    <option value="4th">4th Year</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="editPhoto">ID Picture (optional):</label>
+                                <input type="file" id="editPhoto" accept="image/*">
+                                <div id="currentPhotoPreview" style="margin-top: 10px;"></div>
+                            </div>
+                        </div>
+                        </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="editIsIndigenous">INDIGENOUS PEOPLE:</label>
+                            <input type="checkbox" id="editIsIndigenous">
+                        </div>
+                        <div class="form-group">
+                            <label for="editIsPwd">PWD's:</label>
+                            <input type="checkbox" id="editIsPwd">
+                        </div>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="submit" class="btn btn-primary">Update Student</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeEditStudentModal()">Cancel</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <!-- Student Registration Modal -->
     <div id="studentRegistrationModal" class="modal">
-        <div class="modal-content student-registration-modal">
+        <div class="modal-content student-registration-modal wide-modal">
             <div class="modal-header">
                 <h3>Register New Student</h3>
                 <span class="close" onclick="closeStudentRegistrationModal()">&times;</span>
             </div>
             <div class="modal-body">
                 <form id="studentRegistrationForm" onsubmit="handleStudentRegistration(event)">
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="adminFirstName">First Name:</label>
-                            <input type="text" id="adminFirstName" required>
+                    <div class="form-grid-3">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="adminFirstName">First Name:</label>
+                                <input type="text" id="adminFirstName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="adminLastName">Last Name:</label>
+                                <input type="text" id="adminLastName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="adminStudentIdInput">Student ID:</label>
+                                <input type="text" id="adminStudentIdInput" required>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="adminLastName">Last Name:</label>
-                            <input type="text" id="adminLastName" required>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="adminEmail">Email:</label>
+                                <input type="email" id="adminEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="adminAwardNumber">Award Number:</label>
+                                <input type="text" id="adminAwardNumber" required placeholder="Student's unique award number">
+                            </div>
+                            <div class="form-group">
+                                <label for="adminPassword">Password:</label>
+                                <input type="password" id="adminPassword" required placeholder="Temporary password for student">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="adminStudentIdInput">Student ID:</label>
-                        <input type="text" id="adminStudentIdInput" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="adminEmail">Email:</label>
-                        <input type="email" id="adminEmail" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="adminAwardNumber">Award Number:</label>
-                        <input type="text" id="adminAwardNumber" required placeholder="Student's unique award number">
-                    </div>
-                    <div class="form-group">
-                        <label for="adminPassword">Password:</label>
-                        <input type="password" id="adminPassword" required placeholder="Temporary password for student">
-                    </div>
-                    <div class="form-group">
-                        <label for="adminConfirmPassword">Confirm Password:</label>
-                        <input type="password" id="adminConfirmPassword" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="adminDepartment">Department:</label>
-                        <select id="adminDepartment" required>
-                            <option value="">Select Department</option>
-                            <option value="Department of Computer Studies">Department of Computer Studies</option>
-                            <option value="Department of Business and Management">Department of Business and Management</option>
-                            <option value="Department of Industrial Technology">Department of Industrial Technology</option>
-                            <option value="Department of General Teacher Training">Department of General Teacher Training</option>
-                            <option value="College of Criminal Justice Education">College of Criminal Justice Education</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="adminPlace">From (Address/Origin):</label>
-                        <input type="text" id="adminPlace" placeholder="e.g., City, Province" required>
-                    </div>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label for="adminCourse">Course:</label>
-                            <input type="text" id="adminCourse" required>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="adminConfirmPassword">Confirm Password:</label>
+                                <input type="password" id="adminConfirmPassword" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="adminDepartment">Department:</label>
+                                <select id="adminDepartment" required>
+                                    <option value="">Select Department</option>
+                                    <option value="Department of Computer Studies">Department of Computer Studies</option>
+                                    <option value="Department of Business and Management">Department of Business and Management</option>
+                                    <option value="Department of Industrial Technology">Department of Industrial Technology</option>
+                                    <option value="Department of General Teacher Training">Department of General Teacher Training</option>
+                                    <option value="College of Criminal Justice Education">College of Criminal Justice Education</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="adminPlace">From (Address/Origin):</label>
+                                <input type="text" id="adminPlace" placeholder="e.g., City, Province" required>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="adminYear">Year Level:</label>
-                            <select id="adminYear" required>
-                                <option value="">Select Year</option>
-                                <option value="1st">1st Year</option>
-                                <option value="2nd">2nd Year</option>
-                                <option value="3rd">3rd Year</option>
-                                <option value="4th">4th Year</option>
-                            </select>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="adminCourse">Course:</label>
+                                <input type="text" id="adminCourse" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="adminYear">Year Level:</label>
+                                <select id="adminYear" required>
+                                    <option value="">Select Year</option>
+                                    <option value="1st">1st Year</option>
+                                    <option value="2nd">2nd Year</option>
+                                    <option value="3rd">3rd Year</option>
+                                    <option value="4th">4th Year</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="adminPhoto">ID Picture (optional):</label>
+                                <input type="file" id="adminPhoto" accept="image/*">
+                            </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="adminPhoto">ID Picture (optional):</label>
-                        <input type="file" id="adminPhoto" accept="image/*">
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -872,6 +1066,8 @@
             <span id="toastMessage"></span>
         </div>
     </div>
+
+    
 
     <!-- GranTES List Modal -->
     <div id="grantesListModal" class="modal">
